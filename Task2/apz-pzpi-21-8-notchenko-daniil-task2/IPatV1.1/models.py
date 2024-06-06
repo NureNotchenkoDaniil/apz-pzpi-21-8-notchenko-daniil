@@ -46,6 +46,9 @@ class StoryOfDisease(Model):
     medications = fields.TextField(null=True)
     pet = fields.ForeignKeyField('models.Pet', related_name='disease_stories')
 
+def get_days_between_visits(self):
+        return (self.last_visit_date - self.first_visit_date).days
+
 
 class PetIn(BaseModel):
     pet_name: str
@@ -81,9 +84,6 @@ class PetVaccinationUpdate(BaseModel):
 
 
 pet_vaccination_update_pydantic = PetVaccinationUpdate
-
-def get_days_between_visits(self):
-        return (self.last_visit_date - self.first_visit_date).days
 
 
 user_pydantic = pydantic_model_creator(User, name='User', exclude=('is_verified', ))
