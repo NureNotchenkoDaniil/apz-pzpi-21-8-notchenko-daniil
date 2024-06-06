@@ -344,6 +344,27 @@ async def delete_disease_story(
         )
 
 
+@app.get('/disease_story/{story_id}/days_between_visits')
+async def get_days_between_visits(story_id: int, user: user_pydantic = Depends(get_current_user)):
+    try:
+        story = await StoryOfDisease.get(id=story_id)
+    except DoesNotExist:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='Disease story not found'
+        )
+
+    # Check if the user has the necessary permissions
+    role = await Role.get(user_id=user.id)
+    if not (role.is_admin or role.is_veterinarian or role.is_government or story.pet.owner_id == user.id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Forbidden: You do not have permission to access this resource'
+        )
+
+    days_between_visits = story.get_days_between_visits()
+    return {'status': 'OK', 'days_between_visits': days_between_visits}
+
 
 async def is_admin_user(user: user_pydantic = Depends(get_current_user)):
     role = await Role.get(user_id=user.id)
