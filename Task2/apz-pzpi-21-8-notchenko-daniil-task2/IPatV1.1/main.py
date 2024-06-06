@@ -398,7 +398,7 @@ async def delete_pet_type(pet_type_id: int, user: user_pydantic = Depends(is_adm
     return {'status': 'OK'}
 
 
-#1
+#backup logic
 async def create_database_backup():
     try:
         current_datetime = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
